@@ -145,8 +145,8 @@ if (!empty($graphs)) {
         $legendx = $width - $legendwidth - $padding;
         $legendy = $padding;
         $colnames = array_keys($series);
-        $firstcol = $colnames[0];
-        $graphx = $padding + (strlen($firstcol) * ($fontsize / 2));
+        $firstcol = $colnames[0] ?? "";
+        $graphx = $padding + (strlen((string)$firstcol) * ($fontsize / 2));
         $graphy = $padding;
         $graphwidth = $legendx - $padding;
         $graphheight = $height - $labeloffset;
@@ -159,7 +159,14 @@ if (!empty($graphs)) {
             "LabelRotation" => 45,
             "DrawSubTicks" => true,
         ];
-        $mypicture->drawScale($scalesettings);
+        try {
+            // If some fields are empty, pChart tries to scale 0/0 element, which ends in infinite length/height.
+            // This may throw an exception (with a typo) "pChart: Trying to draw outside of image dimentions.".
+            $mypicture->drawScale($scalesettings);
+        } catch (\Exception $exception) {
+            // Do nothing, image will follow already set rules for width and height.
+        }
+
         $mypicture->setShadow(true, [
             "X" => 1,
             "Y" => 1,
