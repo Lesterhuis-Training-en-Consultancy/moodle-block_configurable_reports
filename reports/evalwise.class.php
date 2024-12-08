@@ -59,7 +59,7 @@ class EvalWise extends EvalMath {
      * @param array $vars
      * @return array|false|mixed|null
      */
-    public function pfx($tokens, array $vars = []) {
+    public function pfx($tokens, $vars = []) {
 
         if ($tokens === false) {
             return false;
